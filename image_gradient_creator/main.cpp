@@ -1,11 +1,7 @@
-#include "Vec3.h"
+
 #include "Vector3D.h"
-// #include "Color.h"
+#include "color.h"
 #include "Ray.h"
-#include "color_test.h"
-#include "color_test_1.h"
-#include "ray_test.h"
-#include "Ray_Test_1.h"
 
 #include <iostream>
 #include <fstream>
@@ -14,21 +10,20 @@
 using namespace std;
 
 
-color_test ray_color( Ray_Test_1& r) {
-    
-    // cout<< unit_direction.getX() << "" <<  endl;
+color ray_color(Ray& r) {
    
     Vector3D unit_direction = r.getDirection().unit();
 
     
     auto a = 0.5 * (unit_direction.getY() + 1.0);
+    
     Vector3D vectorOnes = Vector3D(1.0, 1.0, 1.0);
     Vector3D vectorBlend = Vector3D(0.5, 0.7, 1.0);
     
-    auto color_test_1 = (1.0-a)*color_test(1.0, 1.0, 1.0)  + a*color_test(0.5, 0.7, 1.0);
-    // cout << color_test_1[2];
-    return (1.0-a)*color_test(1.0, 1.0, 1.0)  + a*color_test(0.5, 0.7, 1.0);
-    // return (1.0-a)*color_test(1.0, 1.0, 1.0) + a*color_test(0.5, 0.7, 1.0);
+    Vector3D v1 = color(1.0, 1.0, 1.0).mult(1.0-a);
+    Vector3D v2 = color(0.5, 0.7, 1.0).mult(a);
+
+    return v1.add(v2);
 }
 
 
@@ -58,7 +53,7 @@ int main() {
     
     int img_length = image_height * image_width;
     
-    color_test pixels[img_length];
+    color pixels[img_length];
     int current_pos = 0;
 
     for (int j = 0; j < image_height; ++j) {
@@ -67,7 +62,7 @@ int main() {
             auto pixel_center = pixel_00_loc.add(pixel_delta_u.mult(i)).add(pixel_delta_u.mult(j));
             auto ray_direction = pixel_center.substract(camera_center);
            
-            auto r_test_1 = Ray_Test_1(camera_center, ray_direction);
+            auto r_test_1 = Ray(camera_center, ray_direction);
             auto pixel_color = ray_color(r_test_1);
 
             pixels[current_pos] = pixel_color;
@@ -86,9 +81,9 @@ int main() {
     ppmFileStream << maxColorComponent << "\n";
    
     for (int i = 0; i < img_length; i++) {
-        ppmFileStream << static_cast<int>(255.999 * pixels[i][0]) << " ";
-        ppmFileStream << static_cast<int>(255.999 * pixels[i][1])  << " ";
-        ppmFileStream << static_cast<int>(255.999 * pixels[i][2])  << " " << "\n";
+        ppmFileStream << static_cast<int>(255.999 * pixels[i].getX()) << " ";
+        ppmFileStream << static_cast<int>(255.999 * pixels[i].getY())  << " ";
+        ppmFileStream << static_cast<int>(255.999 * pixels[i].getZ())  << " " << "\n";
     }
     
 
@@ -96,45 +91,3 @@ int main() {
 
     return 0;
 }
-
-
-// void writeFILE(string name, string fileType, int imgWidth, int imgHeight, Vec3 pixels[]) {
-//     int maxColorComponent = 255;
-//     std::ofstream ppmFileStream(name);
-//     ppmFileStream  << fileType;
-//     ppmFileStream << imgWidth << " " << imgHeight << "\n";
-//     ppmFileStream << maxColorComponent << "\n";
-//     int length = imgWidth * imgHeight;
-//     for (int i = 0; i < length; i++) {
-//         ppmFileStream << pixels[i].y() << " ";
-//         ppmFileStream << pixels[i].x()  << " ";
-//         ppmFileStream << 0 << " " << "\n";
-//     }
-    
-
-//     ppmFileStream.close();
-// }
-
-// void saveFILE() {
-
-//     const int maxColorComponent = 255;
-//     const string fileType =  "P3\n";
-//     const string name = "pallete_2.ppm";
-
-//     int image_width = 256;
-//     int image_height = 256;
-    
-//     int length = image_height * image_width;
-//     Vec3 pixels[length];
-//     int current_pos = 0;
-   
-    
-//     for (int x = 0; x < image_height; ++x) {
-//         for (int y = 0; y < image_width; ++y) {
-//             pixels[current_pos] = Vec3 (y, x, 0);
-//             current_pos++;
-//         }
-//     }
-    
-//     writeFILE(name, fileType, image_width, image_height, pixels);
-// }

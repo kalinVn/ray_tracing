@@ -1,45 +1,32 @@
 #ifndef Ray_H
 #define Ray_H
 
-#include <iostream>
 #include "Vector3D.h"
 
 class Ray {
+  public:
+    Ray();
 
-   
-    public:
-        Ray();
+    Ray(const Vector3D, const Vector3D);
 
-        Ray(Vector3D, Vector3D);
+    Vector3D getOrigin() const  { return orig; }
+    Vector3D getDirection() const { return dir; }
 
-        Vector3D getOrigin () {
-            return origin;
-        }
+    Vector3D at(double t) {
+        return orig.add(dir.mult(t));
+    }
 
-        Vector3D getDirection () {
-            return directon;
-        }
-
-        Vector3D at (double t) {
-            Vector3D directionMutled = directon.mult(t);
-            return origin.projectTo(directionMutled);
-        }
-
-    private:
-        Vector3D origin;
-        Vector3D directon;
-
+  private:
+    Vector3D orig;
+    Vector3D dir;
 };
+Ray::Ray () {
+    orig = Vector3D(0, 0, 0);
+    dir = Vector3D(0, 0, 0);
+}
 
-    Ray::Ray () {
-        origin = Vector3D(0, 0, 0);
-        directon = Vector3D(0, 0, 0);
-        
-    }
-
-    Ray::Ray (Vector3D originArg, Vector3D directionArg) {
-        origin = originArg;
-        directon = directionArg;
-    }
- 
+Ray::Ray (Vector3D origin, Vector3D direction) {
+    orig = origin;
+    dir = direction;
+}
 #endif
